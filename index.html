@@ -412,6 +412,93 @@
     .tl-item { min-width:50%; border-bottom:1px solid var(--border-strong); }
     .scale-btn { font-size:0.65rem; }
   }
+
+  /* ── PRINT / A4 ─────────────────────────────────────────────────────── */
+  @media print {
+    @page { size:A4 portrait; margin:14mm 16mm; }
+    *,-webkit-print-color-adjust { -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
+    html, body { background:#111111 !important; color:#f7f7f7 !important; font-size:10pt !important; }
+    main { padding:0 !important; max-width:100% !important; }
+    .screen { display:none !important; }
+    #s-results { display:block !important; }
+    .btn-row, .privacy-note, #print-section { display:none !important; }
+    .score-bar-wrap { background:#333 !important; }
+    .score-bar-fill { background:#DCFF4F !important; }
+    .info-banner { border-left:3px solid #DCFF4F !important; background:rgba(220,255,79,0.06) !important; break-inside:avoid; }
+    .result-row { break-inside:avoid; }
+    #coach-send-block { display:none !important; }
+  }
+
+
+  /* ── COACH SEND ─────────────────────────────────────────────────────── */
+  .coach-send-block {
+    background:var(--surface);
+    border:1px solid var(--border-strong);
+    border-radius:var(--r);
+    padding:28px;
+    margin-top:32px;
+  }
+
+  .coach-send-label {
+    font-family:'GothamMedium',Arial,sans-serif;
+    font-size:0.6rem;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--lime);
+    margin-bottom:16px;
+  }
+
+  .coach-send-row {
+    display:flex;
+    gap:12px;
+    align-items:flex-end;
+    flex-wrap:wrap;
+  }
+
+  .coach-send-select {
+    flex:1;
+    min-width:200px;
+    background:#222;
+    border:1px solid var(--border-strong);
+    color:var(--white);
+    font-family:'GothamBook',Arial,sans-serif;
+    font-size:0.95rem;
+    padding:13px 14px;
+    outline:none;
+    border-radius:var(--r);
+    -webkit-appearance:none;
+    transition:border-color 0.15s;
+  }
+
+  .coach-send-select:focus { border-color:var(--lime); }
+  .coach-send-select option { background:#222; }
+
+  .btn-send {
+    background:var(--lime);
+    color:var(--black);
+    border:none;
+    padding:14px 28px;
+    font-family:'DrukTextBold',Arial,sans-serif;
+    font-size:0.9rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    cursor:pointer;
+    border-radius:var(--r);
+    transition:opacity 0.15s;
+    white-space:nowrap;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  .btn-send:hover { opacity:0.88; }
+
+  .send-note {
+    font-family:'GothamLight',Arial,sans-serif;
+    font-size:0.75rem;
+    color:var(--dim);
+    margin-top:10px;
+    line-height:1.5;
+  }
+
 </style>
 </head>
 <body>
@@ -665,6 +752,31 @@ function showResults() {
       <button class="btn-primary" onclick="window.print()">Save as PDF</button>
     </div>
 
+    <div class="coach-send-block" id="coach-send-block">
+      <div class="coach-send-label">Send results to your coach</div>
+      <div class="coach-send-row">
+        <select class="coach-send-select" id="coach-select">
+          <option value="">— Select your coach —</option>
+        <option value="ben@singlesession.online">Ben Wickham</option>
+        <option value="catherine@singlesession.online">Catherine Leveau</option>
+        <option value="collette@singlesession.online">Collette Stone</option>
+        <option value="ed@singlesession.online">Ed Breen</option>
+        <option value="frederic@singlesession.online">Frederic Caufrier</option>
+        <option value="ingrid@singlesession.online">Ingrid van de Aa</option>
+        <option value="jon@singlesession.online">Jon Unal</option>
+        <option value="kati@singlesession.online">Kati Tuulipuro</option>
+        <option value="kim@singlesession.online">Kim Dutton</option>
+        <option value="linda@singlesession.online">Linda Osnabrug</option>
+        <option value="lisa@singlesession.online">Lisa Brice</option>
+        <option value="peter@singlesession.online">Peter Smith</option>
+        <option value="sati@singlesession.online">Sati Kreula</option>
+        <option value="wouter@singlesession.online">Wouter Gheysen</option>
+        </select>
+        <button class="btn-send" onclick="sendToCoach()">Send →</button>
+      </div>
+      <div class="send-note">Opens your email app with your results pre-filled. You just hit send.</div>
+    </div>
+
     <div class="privacy-note">
       These results exist only in your browser. Nothing has been sent anywhere.
       Save as PDF to keep a record — or screenshot this page.
@@ -679,6 +791,37 @@ function showResults() {
     const bar = document.getElementById('score-bar');
     if (bar) bar.style.width = pct + '%';
   }, 200);
+}
+
+
+function sendToCoach() {
+  const coachEmail = document.getElementById('coach-select').value;
+  if (!coachEmail) { alert('Please select your coach first.'); return; }
+
+  const name      = document.getElementById('f-name').value.trim() || 'A client';
+  const org       = document.getElementById('f-org').value.trim();
+  const tp        = document.getElementById('f-timepoint').value;
+  const date      = new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+  const total     = Object.values(answers).reduce((a,b) => a+b, 0);
+
+  const tpLabel   = TIMEPOINT_LABELS[tp];
+  const orgLine   = org ? ` (${org})` : '';
+
+  let lines = `SSC Pulse Results — ${tpLabel} · ${date}\n`;
+  lines += `Name: ${name}${orgLine}\n`;
+  lines += `Total score: ${total} / 50\n\n`;
+  lines += `Question by question:\n`;
+
+  QUESTIONS.forEach((item, i) => {
+    lines += `${i+1}. ${item.q}\n   Score: ${answers[i] || '—'} / 10\n`;
+  });
+
+  lines += `\n—\nSent via SSC Pulse · singlesession.online`;
+
+  const subject = encodeURIComponent(`SSC Pulse — ${name} · ${tpLabel}`);
+  const body    = encodeURIComponent(lines);
+
+  window.location.href = `mailto:${coachEmail}?subject=${subject}&body=${body}`;
 }
 
 function resetAll() {
