@@ -415,19 +415,183 @@
 
   /* ── PRINT / A4 ─────────────────────────────────────────────────────── */
   @media print {
-    @page { size:A4 portrait; margin:14mm 16mm; }
+    @page { size:A4 portrait; margin:12mm 14mm; }
     *,-webkit-print-color-adjust { -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
-    html, body { background:#111111 !important; color:#f7f7f7 !important; font-size:10pt !important; }
+
+    html, body {
+      background:#ffffff !important;
+      color:#111111 !important;
+      font-size:9.5pt !important;
+      font-family:'GothamBook',Arial,sans-serif !important;
+    }
+
     main { padding:0 !important; max-width:100% !important; }
+
+    /* Hide everything except results */
     .screen { display:none !important; }
     #s-results { display:block !important; }
-    .btn-row, .privacy-note, #print-section { display:none !important; }
-    .score-bar-wrap { background:#333 !important; }
-    .score-bar-fill { background:#DCFF4F !important; }
-    .info-banner { border-left:3px solid #DCFF4F !important; background:rgba(220,255,79,0.06) !important; break-inside:avoid; }
-    .result-row { break-inside:avoid; }
+    .btn-row { display:none !important; }
+    .privacy-note { display:none !important; }
     #coach-send-block { display:none !important; }
+    .progress-wrap { display:none !important; }
+
+    /* Results layout on white */
+    .eyebrow {
+      font-family:'GothamMedium',Arial,sans-serif !important;
+      font-size:7pt !important;
+      letter-spacing:0.18em !important;
+      text-transform:uppercase !important;
+      color:#AACC00 !important;
+      margin-bottom:6px !important;
+    }
+
+    h2 {
+      font-family:'DrukTextBold',Arial,sans-serif !important;
+      font-size:28pt !important;
+      color:#111111 !important;
+      text-transform:uppercase !important;
+      margin-bottom:2px !important;
+      line-height:1 !important;
+    }
+
+    .result-meta {
+      font-family:'GothamBook',Arial,sans-serif !important;
+      font-size:9pt !important;
+      color:#555 !important;
+      margin-bottom:10px !important;
+    }
+
+    /* Score */
+    .score-block { margin:12px 0 4px !important; }
+    .score-num {
+      font-family:'DrukTextBold',Arial,sans-serif !important;
+      font-size:52pt !important;
+      color:#AACC00 !important;
+      line-height:1 !important;
+    }
+    .score-denom { font-size:14pt !important; color:#888 !important; }
+    .score-interpretation {
+      font-size:9pt !important;
+      color:#444 !important;
+      margin-bottom:10px !important;
+      line-height:1.5 !important;
+    }
+
+    /* Score bar */
+    .score-bar-wrap {
+      height:4px !important;
+      background:#e0e0e0 !important;
+      margin-bottom:14px !important;
+      border-radius:2px !important;
+    }
+    .score-bar-fill { background:#AACC00 !important; }
+
+    /* Print layout: spider left, questions right */
+    #print-layout {
+      display:grid !important;
+      grid-template-columns:1fr 1fr !important;
+      gap:16px !important;
+      margin-bottom:14px !important;
+      align-items:start !important;
+    }
+
+    #result-rows { display:block !important; }
+
+    .result-row {
+      display:flex !important;
+      align-items:center !important;
+      gap:10px !important;
+      padding:8px 0 !important;
+      border-bottom:1px solid #e0e0e0 !important;
+      break-inside:avoid !important;
+    }
+    .result-row:first-child { border-top:1px solid #e0e0e0 !important; }
+
+    .result-q {
+      flex:1 !important;
+      font-size:8.5pt !important;
+      color:#222 !important;
+      line-height:1.4 !important;
+    }
+
+    .result-score {
+      font-family:'DrukTextBold',Arial,sans-serif !important;
+      font-size:16pt !important;
+      color:#AACC00 !important;
+      min-width:24px !important;
+    }
+
+    /* Info banner */
+    .info-banner {
+      background:#f8f8f8 !important;
+      border:1px solid #ddd !important;
+      border-left:3px solid #AACC00 !important;
+      padding:10px 14px !important;
+      margin-top:10px !important;
+      break-inside:avoid !important;
+    }
+    .info-banner-label {
+      font-size:6.5pt !important;
+      color:#AACC00 !important;
+      letter-spacing:0.14em !important;
+    }
+    .info-banner-text {
+      font-size:8.5pt !important;
+      color:#333 !important;
+      line-height:1.5 !important;
+    }
+
+    /* Spider canvas */
+    #spider-wrap {
+      display:flex !important;
+      flex-direction:column !important;
+      align-items:center !important;
+    }
+
+    #spider-label {
+      font-family:'GothamMedium',Arial,sans-serif !important;
+      font-size:6.5pt !important;
+      letter-spacing:0.14em !important;
+      text-transform:uppercase !important;
+      color:#888 !important;
+      margin-bottom:6px !important;
+      text-align:center !important;
+    }
+
+    /* Footer */
+    .print-footer {
+      display:block !important;
+      margin-top:10px !important;
+      padding-top:8px !important;
+      border-top:1px solid #e0e0e0 !important;
+      font-family:'GothamBook',Arial,sans-serif !important;
+      font-size:7pt !important;
+      color:#aaa !important;
+      display:flex !important;
+      justify-content:space-between !important;
+    }
   }
+
+  /* Spider — shown on screen in results */
+  #print-layout { display:block; }
+  #spider-wrap {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    margin:32px 0 16px;
+  }
+  #spider-label {
+    font-family:'GothamMedium',Arial,sans-serif;
+    font-size:0.6rem;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--dim);
+    margin-bottom:12px;
+  }
+  #spider-canvas {
+    display:block;
+  }
+  .print-footer { display:none; }
 
 
   /* ── COACH SEND ─────────────────────────────────────────────────────── */
@@ -816,7 +980,115 @@ function showResults() {
   setTimeout(() => {
     const bar = document.getElementById('score-bar');
     if (bar) bar.style.width = pct + '%';
+    drawSpider();
   }, 200);
+}
+
+function drawSpider() {
+  const canvas = document.getElementById('spider-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2;
+  const maxR = Math.min(W, H) / 2 - 36;
+  const n = 5;
+  const scores = [0,1,2,3,4].map(i => (answers[i] || 0) / 10);
+
+  const labels = [
+    'Say difficult\nthings',
+    'Stay in\ndiscomfort',
+    'Let others\nlead',
+    'Decide\nalone',
+    'Give honest\nfeedback'
+  ];
+
+  function pt(i, r) {
+    const angle = (Math.PI * 2 * i / n) - Math.PI / 2;
+    return {
+      x: cx + r * Math.cos(angle),
+      y: cy + r * Math.sin(angle)
+    };
+  }
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Grid rings
+  [0.2, 0.4, 0.6, 0.8, 1.0].forEach(frac => {
+    ctx.beginPath();
+    for (let i = 0; i < n; i++) {
+      const p = pt(i, maxR * frac);
+      i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = frac === 1.0 ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.08)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  });
+
+  // Spokes
+  for (let i = 0; i < n; i++) {
+    const p = pt(i, maxR);
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(p.x, p.y);
+    ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  // Score polygon — filled
+  ctx.beginPath();
+  for (let i = 0; i < n; i++) {
+    const p = pt(i, maxR * scores[i]);
+    i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
+  }
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(220,255,79,0.25)';
+  ctx.fill();
+  ctx.strokeStyle = '#DCFF4F';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Score dots
+  for (let i = 0; i < n; i++) {
+    const p = pt(i, maxR * scores[i]);
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = '#DCFF4F';
+    ctx.fill();
+  }
+
+  // Labels
+  ctx.font = '600 9px GothamMedium, Arial, sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.7)';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  for (let i = 0; i < n; i++) {
+    const p = pt(i, maxR + 24);
+    const lines = labels[i].split('\n');
+    lines.forEach((line, li) => {
+      ctx.fillText(line, p.x, p.y + (li - (lines.length-1)/2) * 13);
+    });
+  }
+
+  // Score numbers on dots
+  ctx.font = 'bold 10px DrukTextBold, Arial, sans-serif';
+  ctx.fillStyle = '#111';
+  for (let i = 0; i < n; i++) {
+    const p = pt(i, maxR * scores[i]);
+    if (scores[i] > 0) {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 8, 0, Math.PI * 2);
+      ctx.fillStyle = '#DCFF4F';
+      ctx.fill();
+      ctx.fillStyle = '#111';
+      ctx.font = 'bold 9px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(answers[i], p.x, p.y);
+    }
+  }
 }
 
 
