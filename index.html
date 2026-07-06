@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSC Pulse</title>
+<style>
+  @font-face { font-family:'DrukTextBold'; src:url('https://static1.squarespace.com/static/67c07a91ad784447cbc65db9/t/6a1009cd7aaf840ccfa17f85/1779435981098/Druk-Bold-Web.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
+  @font-face { font-family:'GothamLight'; src:url('https://static1.squarespace.com/static/67c07a91ad784447cbc65db9/t/6830c26fc80e440c041d2ef5/1748025967908/Gotham-Light.otf') format('opentype'); font-weight:300; font-style:normal; font-display:swap; }
+  @font-face { font-family:'GothamBook'; src:url('https://static1.squarespace.com/static/67c07a91ad784447cbc65db9/t/67c16f32ccecbb575ae82d2f/1740730162912/GothamBook.ttf') format('truetype'); font-weight:400; font-style:normal; font-display:swap; }
+  @font-face { font-family:'GothamMedium'; src:url('https://static1.squarespace.com/static/67c07a91ad784447cbc65db9/t/67c97a2fa70c204473c1f0c9/1741278511802/GothamMedium.ttf') format('truetype'); font-weight:600; font-style:normal; font-display:swap; }
+
+  *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+
+  :root {
+    --lime:#DCFF4F;
+    --white:#f7f7f7;
+    --muted:#bbbbbb;
+    --dim:#888888;
+    --surface:rgba(255,255,255,0.06);
+    --border:rgba(255,255,255,0.12);
+    --border-strong:rgba(255,255,255,0.22);
+    --black:#1a1a1a;
+    --r:6px;
+  }
+
+  html, body {
+    background:transparent;
+    color:var(--white);
+    font-family:'GothamBook',Arial,sans-serif;
+    font-size:0.95rem;
+    line-height:1.6;
+  }
+
+  main {
+    max-width:680px;
+    margin:0 auto;
+    padding:48px 24px 80px;
+  }
+
+  /* SCREENS */
+  .screen { display:none; }
+  .screen.active { display:block; }
+
+  /* PROGRESS */
+  .progress-wrap {
+    display:flex;
+    gap:6px;
+    margin-bottom:48px;
+  }
+
+  .progress-step {
+    flex:1;
+    height:3px;
+    background:var(--border-strong);
+    border-radius:2px;
+    transition:background 0.3s;
+  }
+
+  .progress-step.done { background:var(--lime); }
+  .progress-step.active { background:rgba(220,255,79,0.4); }
+
+  /* EYEBROW */
+  .eyebrow {
+    font-family:'GothamMedium',Arial,sans-serif;
+    font-size:0.6rem;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--lime);
+    margin-bottom:16px;
+  }
+
+  /* HEADINGS */
+  h1 {
+    font-family:'DrukTextBold',Arial,sans-serif;
+    font-size:clamp(2.2rem,6vw,3.8rem);
+    line-height:1;
+    letter-spacing:0.02em;
+    color:var(--white);
+    text-transform:uppercase;
+    margin-bottom:20px;
+  }
+
+  h1 em {
+    color:var(--lime);
+    font-style:italic;
+  }
+
+  h2 {
+    font-family:'DrukTextBold',Arial,sans-serif;
+    font-size:clamp(1.4rem,3.5vw,2.2rem);
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+    color:var(--white);
+    line-height:1.1;
+    margin-bottom:10px;
+  }
+
+  .intro-body {
+    font-family:'GothamLight',Arial,sans-serif;
+    font-size:clamp(0.88rem,1.6vw,1rem);
+    color:var(--muted);
+    line-height:1.75;
+    margin-bottom:40px;
+  }
+
+  /* TIMELINE */
+  .timeline {
+    display:flex;
+    border:1px solid var(--border-strong);
+    border-radius:var(--r);
+    overflow:hidden;
+    margin-bottom:48px;
+  }
+
+  .tl-item {
+    flex:1;
+    padding:16px 18px;
+    border-right:1px solid var(--border-strong);
+    background:var(--surface);
+  }
+
+  .tl-item:last-child { border-right:none; }
+
+  .tl-label {
+    font-family:'GothamMedium',Arial,sans-serif;
+    font-size:0.58rem;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--dim);
+    margin-bottom:5px;
+  }
+
+  .tl-point {
+    font-family:'DrukTextBold',Arial,sans-serif;
+    font-size:0.95rem;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    color:var(--white);
+  }
+
+  .tl-item.now {
+    background:rgba(220,255,79,0.07);
+    border-bottom:2px solid var(--lime);
+  }
+
+  .tl-item.now .tl-label { color:var(--lime); }
+  .tl-item.now .tl-point { color:var(--lime); }
+
+  /* FORM FIELDS */
+  .field-wrap { margin-bottom:24px; }
+
+  .field-label {
+    font-family:'GothamMedium',Arial,sans-serif;
+    font-size:0.6rem;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--muted);
+    display:block;
+    margin-bottom:8px;
+  }
+
+  .field-label .opt {
+    font-family:'GothamLight',Arial,sans-serif;
+    letter-spacing:0;
+    text-transform:none;
+    font-size:0.68rem;
+    color:var(--dim);
+  }
+
+  .field-input, .field-select {
+    width:100%;
+    background:var(--surface);
+    border:1px solid var(--border-strong);
+    color:var(--white);
+    font-family:'GothamBook',Arial,sans-serif;
+    font-size:0.95rem;
+    padding:13px 14px;
+    outline:none;
+    border-radius:var(--r);
+    transition:border-color 0.15s;
+    -webkit-appearance:none;
+  }
+
+  .field-input:focus, .field-select:focus { border-color:var(--lime); }
+  .field-input::placeholder { color:rgba(187,187,187,0.3); }
+  .field-select option { background:#222; color:var(--white); }
+
+  /* QUESTION */
+  .question-block {
+    margin-bottom:40px;
+    padding-bottom:40px;
+    border-bottom:1px solid var(--border);
+  }
+
+  .question-block:last-of-type { border-bottom:none; margin-bottom:0; }
+
+  .q-num {
+    font-family:'GothamMedium',Arial,sans-serif;
+    font-size:0.58rem;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--dim);
+    margin-bottom:10px;
+  }
+
+  .q-text {
+    font-family:'DrukTextBold',Arial,sans-serif;
+    font-size:clamp(1rem,2.2vw,1.4rem);
+    line-height:1.2;
+    text-transform:uppercase;
+    letter-spacing:0.02em;
+    color:var(--white);
+    margin-bottom:24px;
+  }
+
+  .scale-row {
+    display:flex;
+    gap:5px;
+  }
+
+  .scale-btn {
+    flex:1;
+    aspect-ratio:1;
+    border:1px solid var(--border-strong);
+    background:var(--surface);
+    cursor:pointer;
+    font-family:'GothamMedium',Arial,sans-serif;
+    font-size:0.75rem;
+    color:var(--muted);
+    transition:all 0.1s;
+    border-radius:4px;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  .scale-btn:hover { border-color:var(--lime); color:var(--lime); background:rgba(220,255,79,0.06); }
+  .scale-btn.selected { background:var(--lime); border-color:var(--lime); color:var(--black); }
+
+  .scale-labels {
+    display:flex;
+    justify-content:space-between;
+    margin-top:8px;
+    font-family:'GothamMedium',Arial,sans-serif;
+    font-size:0.58rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--dim);
+  }
+
+  /* RESULTS */
+  .result-meta {
+    font-family:'GothamBook',Arial,sans-serif;
+    font-size:0.82rem;
+    color:var(--muted);
+    margin-top:8px;
+    margin-bottom:32px;
+  }
+
+  .score-block {
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+    margin:28px 0 6px;
+  }
+
+  .score-num {
+    font-family:'DrukTextBold',Arial,sans-serif;
+    font-size:clamp(4rem,10vw,6rem);
+    line-height:1;
+    text-transform:uppercase;
+    color:var(--lime);
+  }
+
+  .score-denom {
+    font-family:'GothamMedium',Arial,sans-serif;
+    font-size:1.1rem;
+    color:var(--dim);
+  }
+
+  .score-interpretation {
+    font-family:'GothamBook',Arial,sans-serif;
+    font-size:0.88rem;
+    color:var(--muted);
+    line-height:1.65;
+    margin-bottom:28px;
+  }
+
+  .score-bar-wrap {
+    height:4px;
+    background:var(--border-strong);
+    border-radius:4px;
+    margin-bottom:40px;
+  }
+
+  .score-bar-fill {
+    height:100%;
+    background:var(--lime);
+    border-radius:4px;
+    transition:width 1s ease;
+  }
+
+  .result-row {
+    display:flex;
+    align-items:center;
+    gap:16px;
+    padding:14px 0;
+    border-bottom:1px solid var(--border);
+  }
+
+  .result-row:first-child { border-top:1px solid var(--border); }
+
+  .result-q {
+    flex:1;
+    font-family:'GothamLight',Arial,sans-serif;
+    font-size:0.85rem;
+    color:var(--white);
+    line-height:1.5;
+  }
+
+  .result-score {
+    font-family:'DrukTextBold',Arial,sans-serif;
+    font-size:1.5rem;
+    color:var(--lime);
+    min-width:32px;
+    text-align:right;
+  }
+
+  /* BANNER */
+  .info-banner {
+    border:1px solid var(--border);
+    border-left:3px solid var(--lime);
+    border-radius:var(--r);
+    padding:20px 24px;
+    margin-bottom:28px;
+    background:rgba(220,255,79,0.04);
+  }
+
+  .info-banner-label {
+    font-family:'GothamMedium',Arial,sans-serif;
+    font-size:0.6rem;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--lime);
+    margin-bottom:8px;
+  }
+
+  .info-banner-text {
+    font-family:'GothamBook',Arial,sans-serif;
+    font-size:0.88rem;
+    color:var(--white);
+    line-height:1.65;
+  }
+
+  /* PRIVACY */
+  .privacy-note {
+    font-family:'GothamLight',Arial,sans-serif;
+    font-size:0.72rem;
+    color:var(--dim);
+    line-height:1.65;
+    border-top:1px solid var(--border);
+    padding-top:20px;
+    margin-top:40px;
+  }
+
+  /* BUTTONS */
+  .btn-primary {
+    background:var(--lime);
+    color:var(--black);
+    border:none;
+    padding:18px 36px;
+    font-family:'DrukTextBold',Arial,sans-serif;
+    font-size:1rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    cursor:pointer;
+    border-radius:var(--r);
+    transition:opacity 0.15s;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  .btn-primary:hover { opacity:0.88; }
+  .btn-primary:disabled { opacity:0.4; cursor:not-allowed; }
+
+  .btn-secondary {
+    background:transparent;
+    color:var(--muted);
+    border:1px solid var(--border-strong);
+    padding:16px 28px;
+    font-family:'GothamMedium',Arial,sans-serif;
+    font-size:0.75rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    cursor:pointer;
+    border-radius:var(--r);
+    transition:all 0.15s;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  .btn-secondary:hover { border-color:var(--white); color:var(--white); }
+
+  .btn-row {
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-top:40px;
+    flex-wrap:wrap;
+  }
+
+  @media(max-width:560px){
+    main { padding:32px 16px 60px; }
+    .timeline { flex-wrap:wrap; }
+    .tl-item { min-width:50%; border-bottom:1px solid var(--border-strong); }
+    .scale-btn { font-size:0.65rem; }
+  }
+</style>
+</head>
+<body>
+<main>
+
+  <!-- SCREEN 1: INTRO -->
+  <div class="screen active" id="s-intro">
+    <p class="eyebrow">SSC Pulse</p>
+    <h1>Where are you <em>right now?</em></h1>
+    <p class="intro-body">
+      Five questions. Five minutes. The same five questions every time — at two months, six months, a year.
+      Not to grade you. To show you what's moved.
+    </p>
+
+    <div class="timeline">
+      <div class="tl-item now">
+        <div class="tl-label">Now</div>
+        <div class="tl-point">Baseline</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-label">Month 2</div>
+        <div class="tl-point">Early signal</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-label">Month 6</div>
+        <div class="tl-point">Consolidation</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-label">Month 12</div>
+        <div class="tl-point">Outcome</div>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="goTo('s-setup')">Begin →</button>
+
+    <div class="privacy-note">
+      Your responses are not stored anywhere. Nothing is sent to anyone. This runs entirely in your browser —
+      save your results as a PDF if you want to keep them.
+    </div>
+  </div>
+
+  <!-- SCREEN 2: SETUP -->
+  <div class="screen" id="s-setup">
+    <div class="progress-wrap" id="prog-setup"></div>
+    <p class="eyebrow">About you</p>
+    <h2>Before we start</h2>
+    <p class="intro-body" style="margin-bottom:32px;">Optional — but it means your results page will feel like yours.</p>
+
+    <div class="field-wrap">
+      <label class="field-label" for="f-name">Your name <span class="opt">— optional</span></label>
+      <input class="field-input" id="f-name" type="text" placeholder="First name is fine" />
+    </div>
+
+    <div class="field-wrap">
+      <label class="field-label" for="f-org">Organisation <span class="opt">— optional</span></label>
+      <input class="field-input" id="f-org" type="text" placeholder="Your company" />
+    </div>
+
+    <div class="field-wrap">
+      <label class="field-label" for="f-timepoint">This is my</label>
+      <select class="field-select" id="f-timepoint">
+        <option value="T0">Baseline — before or just after my session</option>
+        <option value="T2">Two-month check-in</option>
+        <option value="T6">Six-month check-in</option>
+        <option value="T12">Twelve-month check-in</option>
+        <option value="T24">Two-year check-in</option>
+      </select>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-secondary" onclick="goTo('s-intro')">← Back</button>
+      <button class="btn-primary" onclick="goTo('s-questions')">Continue →</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: QUESTIONS -->
+  <div class="screen" id="s-questions">
+    <div class="progress-wrap" id="prog-questions"></div>
+    <p class="eyebrow" id="q-eyebrow">Your pulse</p>
+    <div id="questions-container"></div>
+    <div class="btn-row">
+      <button class="btn-secondary" onclick="goTo('s-setup')">← Back</button>
+      <button class="btn-primary" id="btn-submit" disabled onclick="showResults()">See my results →</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 4: RESULTS -->
+  <div class="screen" id="s-results">
+    <div id="results-container"></div>
+  </div>
+
+</main>
+
+<script>
+const QUESTIONS = [
+  {
+    q: 'How easy is it to say something difficult to someone more senior than you?',
+    lo: 'Almost impossible',
+    hi: 'Completely natural'
+  },
+  {
+    q: 'How easy is it to stay in a conversation that\'s becoming uncomfortable?',
+    lo: 'Almost impossible',
+    hi: 'Completely natural'
+  },
+  {
+    q: 'How easy is it to let someone else lead without stepping in?',
+    lo: 'Almost impossible',
+    hi: 'Completely natural'
+  },
+  {
+    q: 'How easy is it to make a decision without needing sign-off?',
+    lo: 'Almost impossible',
+    hi: 'Completely natural'
+  },
+  {
+    q: 'How easy is it to give honest feedback to someone in your team?',
+    lo: 'Almost impossible',
+    hi: 'Completely natural'
+  }
+];
+
+const TIMEPOINT_LABELS = {
+  T0: 'Baseline',
+  T2: 'Two-month check-in',
+  T6: 'Six-month check-in',
+  T12: 'Twelve-month check-in',
+  T24: 'Two-year check-in'
+};
+
+const TIMEPOINT_NEXT = {
+  T0: 'Come back in two months with the same five questions. The gap between now and then is where the work happens.',
+  T2: 'Your next check-in is at six months. You\'re building a record of something real.',
+  T6: 'Your next check-in is at twelve months. Six months in — the pattern of change is becoming visible.',
+  T12: 'Two years of tracking. This is a rare and valuable record of how you\'ve changed as a leader.',
+  T24: 'You\'ve tracked this for two years. That\'s exceptional.'
+};
+
+const answers = {};
+
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+  if (id === 's-questions') renderQuestions();
+  updateProgress(id);
+}
+
+function updateProgress(screenId) {
+  const steps = { 's-intro':0, 's-setup':1, 's-questions':2, 's-results':3 };
+  const current = steps[screenId] || 0;
+  const total = 3;
+  ['prog-setup','prog-questions'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = Array.from({length:total}, (_,i) =>
+      `<div class="progress-step ${i < current ? 'done' : i === current ? 'active' : ''}"></div>`
+    ).join('');
+  });
+}
+
+function renderQuestions() {
+  const tp = document.getElementById('f-timepoint').value;
+  document.getElementById('q-eyebrow').textContent = TIMEPOINT_LABELS[tp];
+  const container = document.getElementById('questions-container');
+  container.innerHTML = '';
+
+  QUESTIONS.forEach((item, i) => {
+    const block = document.createElement('div');
+    block.className = 'question-block';
+
+    let btns = '<div class="scale-row">';
+    for (let v = 1; v <= 10; v++) {
+      btns += `<button class="scale-btn ${answers[i] === v ? 'selected' : ''}" id="q${i}_${v}" onclick="selectAnswer(${i},${v})">${v}</button>`;
+    }
+    btns += '</div>';
+    btns += `<div class="scale-labels"><span>${item.lo}</span><span>${item.hi}</span></div>`;
+
+    block.innerHTML = `
+      <div class="q-num">Question ${i+1} of ${QUESTIONS.length}</div>
+      <div class="q-text">${item.q}</div>
+      ${btns}
+    `;
+    container.appendChild(block);
+  });
+
+  checkComplete();
+}
+
+function selectAnswer(qIdx, val) {
+  answers[qIdx] = val;
+  for (let v = 1; v <= 10; v++) {
+    const btn = document.getElementById(`q${qIdx}_${v}`);
+    if (btn) btn.classList.toggle('selected', v === val);
+  }
+  checkComplete();
+}
+
+function checkComplete() {
+  const done = Object.keys(answers).length >= QUESTIONS.length;
+  document.getElementById('btn-submit').disabled = !done;
+}
+
+function showResults() {
+  const name = document.getElementById('f-name').value.trim();
+  const org  = document.getElementById('f-org').value.trim();
+  const tp   = document.getElementById('f-timepoint').value;
+  const date = new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+
+  const total = Object.values(answers).reduce((a,b) => a+b, 0);
+  const pct   = Math.round((total / 50) * 100);
+
+  const interpretation = total <= 20
+    ? 'Low ease overall. These conversations and choices are still costing you significant energy. That\'s exactly what the session works on.'
+    : total <= 35
+    ? 'Moderate ease. Some of this is coming more naturally — and some is still a stretch. Worth watching which questions moved and which didn\'t.'
+    : 'High ease. These situations feel largely accessible to you right now. The question is whether that\'s held across every context — or whether certain people or pressures still trigger the old pattern.';
+
+  let rows = '';
+  QUESTIONS.forEach((item, i) => {
+    rows += `<div class="result-row">
+      <div class="result-q">${item.q}</div>
+      <div class="result-score">${answers[i]}</div>
+    </div>`;
+  });
+
+  document.getElementById('results-container').innerHTML = `
+    <p class="eyebrow">${TIMEPOINT_LABELS[tp]} · ${date}</p>
+    <h2>${name || 'Your results'}</h2>
+    <p class="result-meta">${org || ''}${org && name ? '' : ''}</p>
+
+    <div class="score-block">
+      <span class="score-num">${total}</span>
+      <span class="score-denom">/ 50</span>
+    </div>
+    <p class="score-interpretation">${interpretation}</p>
+
+    <div class="score-bar-wrap">
+      <div class="score-bar-fill" id="score-bar" style="width:0%"></div>
+    </div>
+
+    <div id="result-rows">${rows}</div>
+
+    <div class="info-banner" style="margin-top:32px;">
+      <div class="info-banner-label">What happens next</div>
+      <div class="info-banner-text">${TIMEPOINT_NEXT[tp]}</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-secondary" onclick="resetAll()">Start again</button>
+      <button class="btn-primary" onclick="window.print()">Save as PDF</button>
+    </div>
+
+    <div class="privacy-note">
+      These results exist only in your browser. Nothing has been sent anywhere.
+      Save as PDF to keep a record — or screenshot this page.
+      When you return for your next check-in, your previous scores won't be here,
+      so save this now if you want to compare.
+    </div>
+  `;
+
+  goTo('s-results');
+
+  setTimeout(() => {
+    const bar = document.getElementById('score-bar');
+    if (bar) bar.style.width = pct + '%';
+  }, 200);
+}
+
+function resetAll() {
+  Object.keys(answers).forEach(k => delete answers[k]);
+  goTo('s-intro');
+}
+
+// Init
+updateProgress('s-intro');
+</script>
+</body>
+</html>
