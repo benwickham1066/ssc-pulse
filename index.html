@@ -115,7 +115,7 @@
 
   .tl-item {
     flex:1;
-    padding:16px 18px;
+    padding:24px 22px;
     border-right:1px solid var(--border-strong);
     background:var(--surface);
   }
@@ -124,11 +124,11 @@
 
   .tl-label {
     font-family:'GothamMedium',Arial,sans-serif;
-    font-size:0.58rem;
-    letter-spacing:0.16em;
+    font-size:0.72rem;
+    letter-spacing:0.14em;
     text-transform:uppercase;
     color:var(--dim);
-    margin-bottom:5px;
+    margin-bottom:8px;
   }
 
   .tl-point {
@@ -144,8 +144,8 @@
     border-bottom:2px solid var(--lime);
   }
 
-  .tl-item.now .tl-label { color:var(--lime); }
-  .tl-item.now .tl-point { color:var(--lime); }
+  .tl-item.now .tl-label { color:var(--lime); font-size:0.72rem; }
+  .tl-item.now .tl-point { color:var(--lime); font-size:clamp(1.4rem,2.5vw,2rem); }
 
   /* FORM FIELDS */
   .field-wrap { margin-bottom:24px; }
